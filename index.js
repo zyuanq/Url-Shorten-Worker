@@ -4,6 +4,7 @@ theme:"",//Homepage theme, use the empty value for default theme. To use urlcool
 cors: "on",//Allow Cross-origin resource sharing for API requests.
 unique_link:false,//If it is true, the same long url will be shorten into the same short url
 custom_link:true,//Allow users to customize the short url.
+snapchat_mode:false,//The link will be distroyed after access.
 }
 
 const html404 = `<!DOCTYPE html>
@@ -174,6 +175,7 @@ async function handleRequest(request) {
   const params = requestURL.search;
 
   console.log(path)
+  // 如果path为空, 即直接访问网址
   if(!path){
     return Response.redirect("https://zelikk.blogspot.com/search/label/Url-Shorten-Worker", 302)
     /* new Response(html404, {
@@ -196,6 +198,7 @@ async function handleRequest(request) {
     })
   }
 
+  // 在KV中查询 短链接 对应的原链接
   const value = await LINKS.get(path);
   let location ;
 
@@ -216,7 +219,13 @@ async function handleRequest(request) {
           "content-type": "text/html;charset=UTF-8",
         },
       })
-    }else{
+    } else {
+      // 如果阅后即焚模式
+      if (config.snapchat_mode){
+        // 删除KV中的记录
+        await LINKS.delete(path)
+      }
+
       return Response.redirect(location, 302)
     }    
   }
