@@ -5,6 +5,7 @@ cors: "on",//Allow Cross-origin resource sharing for API requests.
 unique_link:false,//If it is true, the same long url will be shorten into the same short url
 custom_link:true,//Allow users to customize the short url.
 snapchat_mode:false,//The link will be distroyed after access.
+count:false,//Count visit times.
 }
 
 const html404 = `<!DOCTYPE html>
@@ -70,8 +71,14 @@ async function save_url(URL){
     let random_key=await randomString()
     let is_exist=await LINKS.get(random_key)
     console.log(is_exist)
-    if (is_exist == null)
+    if (is_exist == null){
+        // 计数功能
+        if (config.count){
+          // 在保存链接的同时, 为其创建一个统计键并初始化为0
+          await LINKS.put(random_key + "_count", "0");
+        }
         return await LINKS.put(random_key, URL),random_key
+    }
     else
         save_url(URL)
 }
@@ -140,7 +147,7 @@ async function handleRequest(request) {
       }
       console.log(stat)
       if (typeof(stat) == "undefined"){
-        return new Response(`{"status":200, "key":"`+random_key+`", "error": ""}`, {
+        return new Response(`{"status":200, "key":"` + random_key + `", "error": ""}`, {
           headers: response_header,
         })
       }else{
@@ -210,6 +217,18 @@ async function handleRequest(request) {
   console.log(value)
   
   if (location) {
+    // 计数功能
+    if (config.count){
+      // 获取并增加访问计数
+      let count = await LINKS.get(path + "_count");
+      if (count === null) {
+        await LINKS.put(path + "_count", "1"); // 初始化为1，因为这是首次访问
+      } else {
+        count = parseInt(count) + 1;
+        await LINKS.put(path + "_count", count.toString());
+      }
+    }
+
     if (config.no_ref=="on"){
       let no_ref= await fetch("https://crazypeace.github.io/Url-Shorten-Worker/no-ref.html")
       no_ref=await no_ref.text()
