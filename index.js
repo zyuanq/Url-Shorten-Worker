@@ -5,7 +5,7 @@ const config = {
   unique_link: false,//If it is true, the same long url will be shorten into the same short url
   custom_link: true,//Allow users to customize the short url.
   snapchat_mode: false,//The link will be distroyed after access.
-  count: false,//Count visit times.
+  visit_count: false,//Count visit times.
 }
 
 const html404 = `<!DOCTYPE html>
@@ -73,7 +73,7 @@ async function save_url(URL) {
   console.log(is_exist)
   if (is_exist == null) {
     // 计数功能
-    if (config.count) {
+    if (config.visit_count) {
       // 在保存链接的同时, 为其创建一个统计键并初始化为0
       await LINKS.put(random_key + "-count", "0");
     }
@@ -218,7 +218,7 @@ async function handleRequest(request) {
 
   if (location) {
     // 计数功能
-    if (config.count) {
+    if (config.visit_count) {
       // 获取并增加访问计数
       let count = await LINKS.get(path + "-count");
       if (count === null) {
