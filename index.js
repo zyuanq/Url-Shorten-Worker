@@ -99,23 +99,26 @@ async function handleRequest(request) {
 
   if (request.method === "POST") {
     let req = await request.json()
+
     let req_cmd = req["cmd"]
+    let req_url = req["url"]
+    let req_keyPhrase = req["keyPhrase"]
+    let req_password = req["password"]
+
+    console.log(req_cmd)
+    console.log(req_url)
+    console.log(req_keyPhrase)
+    console.log(req_password)
+
+    if (req_password != password_value) {
+      return new Response(`{"status":500,"key": "", "error":": Error: Invalid password."}`, {
+        headers: response_header,
+      })
+    }
+
     if (req_cmd == "add") {
-      let req_url = req["url"]
-      let req_keyPhrase = req["keyPhrase"]
-      let req_password = req["password"]
-
-      console.log(req_url)
-      console.log(req_keyPhrase)
-      console.log(req_password)
       if (!await checkURL(req_url)) {
-        return new Response(`{"status":500,"key": "", "error":": Error: Url illegal."}`, {
-          headers: response_header,
-        })
-      }
-
-      if (req_password != password_value) {
-        return new Response(`{"status":500,"key": "", "error":": Error: Invalid password."}`, {
+        return new Response(`{"status":500, "url": "` + req_url + `", "error":": Error: Url illegal."}`, {
           headers: response_header,
         })
       }
@@ -124,7 +127,7 @@ async function handleRequest(request) {
       if (config.custom_link && (req_keyPhrase != "")) {
         let is_exist = await LINKS.get(req_keyPhrase)
         if (is_exist != null) {
-          return new Response(`{"status":500,"key": "", "error":": Error: Custom shortURL existed."}`, {
+          return new Response(`{"status":500,"key": "` + req_keyPhrase + `", "error":": Error: Custom shortURL existed."}`, {
             headers: response_header,
           })
         } else {
@@ -156,19 +159,21 @@ async function handleRequest(request) {
         })
       }
     } else if (req_cmd == "del") {
-      let req_keyPhrase = req["keyPhrase"]
-      let req_password = req["password"]
-
-      if (req_password != password_value) {
-        return new Response(`{"status":500,"key": "", "error":": Error: Invalid password."}`, {
+      await LINKS.delete(req_keyPhrase)
+      return new Response(`{"status":200, "key": "` + req_keyPhrase + `", "error": ""}`, {
+        headers: response_header,
+      })
+    } else if (req_cmd == "qry") {
+      let value = await LINKS.get(req_keyPhrase)
+      if (value != null) {
+        return new Response(`{"status":200, "key": "` + req_keyPhrase + `", "url": "` + value + `", "error":""}`, {
+          headers: response_header,
+        })
+      } else {
+        return new Response(`{"status":500, "key": "` + req_keyPhrase + `", "error":": Error:shortURL not exist."}`, {
           headers: response_header,
         })
       }
-
-      await LINKS.delete(req_keyPhrase)
-      return new Response(`{"status":200}`, {
-        headers: response_header,
-      })
     }
 
   } else if (request.method === "OPTIONS") {
