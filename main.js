@@ -1,7 +1,7 @@
 let res
 
-let apiSrv = "https://1way.eu.org"
-//let apiSrv = window.location.pathname
+// let apiSrv = "https://1way.eu.org"
+let apiSrv = window.location.pathname
 
 function shorturl() {
   if (document.querySelector("#longURL").value == "") {
