@@ -28,3 +28,11 @@ https://zelikk.blogspot.com/2022/08/url-shorten-worker-bootstrap-list-group-onin
 增加删除某条短链的按钮
 
 https://zelikk.blogspot.com/2022/08/url-shorten-worker-delete-kv-localstorage.html
+
+访问计数功能 可查询短链 成为功能完整的短链API系统
+
+https://zelikk.blogspot.com/2023/11/url-shorten-worker-visit-count-api-api.html
+
+阅后即焚功能, 可制作一次性二维码
+
+https://zelikk.blogspot.com/2023/11/url-shorten-worker-snapchat-mode.html
