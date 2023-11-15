@@ -103,12 +103,12 @@ async function handleRequest(request) {
 
     let req_cmd = req["cmd"]
     let req_url = req["url"]
-    let req_keyPhrase = req["keyPhrase"]
+    let req_key = req["key"]
     let req_password = req["password"]
 
     console.log(req_cmd)
     console.log(req_url)
-    console.log(req_keyPhrase)
+    console.log(req_key)
     console.log(req_password)
 
     if (req_password != password_value) {
@@ -125,15 +125,15 @@ async function handleRequest(request) {
       }
 
       let stat, random_key
-      if (config.custom_link && (req_keyPhrase != "")) {
-        let is_exist = await LINKS.get(req_keyPhrase)
+      if (config.custom_link && (req_key != "")) {
+        let is_exist = await LINKS.get(req_key)
         if (is_exist != null) {
-          return new Response(`{"status":500,"key": "` + req_keyPhrase + `", "error":"Error: Custom shortURL existed."}`, {
+          return new Response(`{"status":500,"key": "` + req_key + `", "error":"Error: Custom shortURL existed."}`, {
             headers: response_header,
           })
         } else {
-          random_key = req_keyPhrase
-          stat, await LINKS.put(req_keyPhrase, req_url)
+          random_key = req_key
+          stat, await LINKS.put(req_key, req_url)
         }
       } else if (config.unique_link) {
         let url_sha512 = await sha512(req_url)
@@ -160,24 +160,24 @@ async function handleRequest(request) {
         })
       }
     } else if (req_cmd == "del") {
-      await LINKS.delete(req_keyPhrase)
+      await LINKS.delete(req_key)
       
       // 计数功能打开的话, 要把计数的那条KV也删掉
       if (config.visit_count) {
-        await LINKS.delete(req_keyPhrase + "-count")
+        await LINKS.delete(req_key + "-count")
       }
 
-      return new Response(`{"status":200, "key": "` + req_keyPhrase + `", "error": ""}`, {
+      return new Response(`{"status":200, "key": "` + req_key + `", "error": ""}`, {
         headers: response_header,
       })
     } else if (req_cmd == "qry") {
-      let value = await LINKS.get(req_keyPhrase)
+      let value = await LINKS.get(req_key)
       if (value != null) {
-        return new Response(`{"status":200, "key": "` + req_keyPhrase + `", "url": "` + value + `", "error":""}`, {
+        return new Response(`{"status":200, "key": "` + req_key + `", "url": "` + value + `", "error":""}`, {
           headers: response_header,
         })
       } else {
-        return new Response(`{"status":500, "key": "` + req_keyPhrase + `", "error":"Error:shortURL not exist."}`, {
+        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:shortURL not exist."}`, {
           headers: response_header,
         })
       }

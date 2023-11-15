@@ -14,7 +14,7 @@ function shorturl() {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "add", url: document.querySelector("#longURL").value, keyPhrase: document.querySelector("#keyPhrase").value, password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "add", url: document.querySelector("#longURL").value, key: document.querySelector("#keyPhrase").value, password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
   })
@@ -159,7 +159,7 @@ function deleteShortUrl(delKeyPhrase) {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "del", keyPhrase: delKeyPhrase, password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "del", key: delKeyPhrase, password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
   })
@@ -196,7 +196,7 @@ function queryVisitCount(qryKeyPhrase) {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "qry", keyPhrase: qryKeyPhrase + "-count", password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase + "-count", password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
   })
