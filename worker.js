@@ -241,6 +241,12 @@ async function handleRequest(request) {
       }
     }
 
+    // 如果阅后即焚模式
+    if (config.snapchat_mode) {
+      // 删除KV中的记录
+      await LINKS.delete(path)
+    }
+
     if (config.no_ref == "on") {
       let no_ref = await fetch("https://crazypeace.github.io/Url-Shorten-Worker/no-ref.html")
       no_ref = await no_ref.text()
@@ -251,15 +257,10 @@ async function handleRequest(request) {
         },
       })
     } else {
-      // 如果阅后即焚模式
-      if (config.snapchat_mode) {
-        // 删除KV中的记录
-        await LINKS.delete(path)
-      }
-
       return Response.redirect(location, 302)
     }
   }
+  
   // If request not in kv, return 404
   return new Response(html404, {
     headers: {
