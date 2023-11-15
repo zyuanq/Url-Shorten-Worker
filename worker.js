@@ -161,6 +161,12 @@ async function handleRequest(request) {
       }
     } else if (req_cmd == "del") {
       await LINKS.delete(req_keyPhrase)
+      
+      // 计数功能打开的话, 要把计数的那条KV也删掉
+      if (config.visit_count) {
+        await LINKS.delete(req_keyPhrase + "-count")
+      }
+
       return new Response(`{"status":200, "key": "` + req_keyPhrase + `", "error": ""}`, {
         headers: response_header,
       })
