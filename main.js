@@ -140,7 +140,7 @@ function addUrlToList(shortUrl, longUrl) {
   child.appendChild(keyTxt)
   
   // 长链接信息
-  let valueTxt = document.createElement('span')
+  let valueTxt = document.createElement('div')
   valueTxt.classList.add("lnk")
   valueTxt.innerText = longUrl
   child.appendChild(valueTxt)
