@@ -9,6 +9,10 @@ const config = {
   load_kv: false,//load all from kv
 }
 
+const can_not_del_keylist = [
+  "password",
+]
+
 let index_html = "https://crazypeace.github.io/Url-Shorten-Worker/" + config.theme + "/index.html"
 let no_ref_html = "https://crazypeace.github.io/Url-Shorten-Worker/no-ref.html"
 
@@ -104,6 +108,7 @@ async function handleRequest(request) {
 
   if (request.method === "POST") {
     let req = await request.json()
+    console.log(req)
 
     let req_cmd = req["cmd"]
     let req_url = req["url"]
@@ -164,6 +169,12 @@ async function handleRequest(request) {
         })
       }
     } else if (req_cmd == "del") {
+      if (can_not_del_keylist.includes(req_key)) {
+        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:key in can_not_del_keylist."}`, {
+          headers: response_header,
+        })
+      }
+
       await LINKS.delete(req_key)
       
       // 计数功能打开的话, 要把计数的那条KV也删掉
