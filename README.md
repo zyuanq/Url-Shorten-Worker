@@ -36,3 +36,7 @@ https://zelikk.blogspot.com/2023/11/url-shorten-worker-visit-count-api-api.html
 阅后即焚功能, 可制作一次性二维码
 
 https://zelikk.blogspot.com/2023/11/url-shorten-worker-snapchat-mode.html
+
+增加读取 KV 中全部记录的功能
+
+https://zelikk.blogspot.com/2024/01/url-shorten-worker-load-cloudflare-kv.html
