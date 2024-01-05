@@ -185,19 +185,17 @@ async function handleRequest(request) {
           headers: response_header,
         })
       }
-    } else if (req_cmd == "qryall" && config.load_kv) {
+    } else if (req_cmd == "qryall") {
+      if ( !config.load_kv) {
+        return new Response(`{"status":500, "error":"Error: config.load_kv false."}`, {
+          headers: response_header,
+        })
+      }
+
       let keyList = await LINKS.list()
       if (keyList != null) {
         let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "kvlist": []}`);
-        
-        // 遍历kvlist数组
-        keyList.forEach(item => {
-          let url = await LINKS.get(item.name);
-          // 添加新元素到列表
-          jsonObjectRetrun.kvlist.push({ "key": item.name, "value": url });
-        });        
-        
-        /*
+                
         for (var i = 0; i < keyList.keys.length; i++) {
           let item = keyList.keys[i];
           let url = await LINKS.get(item.name);
@@ -205,8 +203,7 @@ async function handleRequest(request) {
           let newElement = { "key": item.name, "value": url };
           // 添加新元素到列表
           jsonObjectRetrun.kvlist.push(newElement);
-        }
-        */
+        }       
 
         return new Response(JSON.stringify(jsonObjectRetrun) , {
           headers: response_header,
@@ -216,6 +213,7 @@ async function handleRequest(request) {
           headers: response_header,
         })
       }
+
     }
 
   } else if (request.method === "OPTIONS") {
