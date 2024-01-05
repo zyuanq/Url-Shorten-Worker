@@ -17,34 +17,33 @@ function shorturl() {
     body: JSON.stringify({ cmd: "add", url: document.querySelector("#longURL").value, key: document.querySelector("#keyPhrase").value, password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
+  }).then(function (myJson) {
+    res = myJson;
+    document.getElementById("addBtn").disabled = false;
+    document.getElementById("addBtn").innerHTML = 'Shorten it';
+
+    // 成功生成短链
+    if (res.status == "200") {
+      let keyPhrase = res.key;
+      let valueLongURL = document.querySelector("#longURL").value;
+      // save to localStorage
+      localStorage.setItem(keyPhrase, valueLongURL);
+      // add to urlList on the page
+      addUrlToList(keyPhrase, valueLongURL)
+
+      document.getElementById("result").innerHTML = window.location.protocol + "//" + window.location.host + "/" + res.key;
+    } else {
+      document.getElementById("result").innerHTML = res.error;
+    }
+
+    $('#resultModal').modal('show')
+
+  }).catch(function (err) {
+    alert("Unknow error. Please retry!");
+    console.log(err);
+    document.getElementById("addBtn").disabled = false;
+    document.getElementById("addBtn").innerHTML = 'Shorten it';
   })
-    .then(function (myJson) {
-      res = myJson;
-      document.getElementById("addBtn").disabled = false;
-      document.getElementById("addBtn").innerHTML = 'Shorten it';
-
-      // 成功生成短链
-      if (res.status == "200") {
-        let keyPhrase = res.key;
-        let valueLongURL = document.querySelector("#longURL").value;
-        // save to localStorage
-        localStorage.setItem(keyPhrase, valueLongURL);
-        // add to urlList on the page
-        addUrlToList(keyPhrase, valueLongURL)
-
-        document.getElementById("result").innerHTML = window.location.protocol + "//" + window.location.host + "/" + res.key;
-      } else {
-        document.getElementById("result").innerHTML = res.error;
-      }
-
-      $('#resultModal').modal('show')
-
-    }).catch(function (err) {
-      alert("Unknow error. Please retry!");
-      console.log(err);
-      document.getElementById("addBtn").disabled = false;
-      document.getElementById("addBtn").innerHTML = 'Shorten it';
-    })
 }
 
 function copyurl(id, attr) {
@@ -164,29 +163,28 @@ function deleteShortUrl(delKeyPhrase) {
     body: JSON.stringify({ cmd: "del", key: delKeyPhrase, password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
+  }).then(function (myJson) {
+    res = myJson;
+
+    // 成功删除
+    if (res.status == "200") {
+      // 从localStorage中删除
+      localStorage.removeItem(delKeyPhrase)
+
+      // 加载localStorage
+      loadUrlList()
+
+      document.getElementById("result").innerHTML = "Delete Successful"
+    } else {
+      document.getElementById("result").innerHTML = res.error;
+    }
+
+    $('#resultModal').modal('show')
+
+  }).catch(function (err) {
+    alert("Unknow error. Please retry!");
+    console.log(err);
   })
-    .then(function (myJson) {
-      res = myJson;
-
-      // 成功删除
-      if (res.status == "200") {
-        // 从localStorage中删除
-        localStorage.removeItem(delKeyPhrase)
-
-        // 加载localStorage
-        loadUrlList()
-
-        document.getElementById("result").innerHTML = "Delete Successful"
-      } else {
-        document.getElementById("result").innerHTML = res.error;
-      }
-
-      $('#resultModal').modal('show')
-
-    }).catch(function (err) {
-      alert("Unknow error. Please retry!");
-      console.log(err);
-    })
 }
 
 function queryVisitCount(qryKeyPhrase) {
@@ -201,22 +199,55 @@ function queryVisitCount(qryKeyPhrase) {
     body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase + "-count", password: document.querySelector("#passwordText").value })
   }).then(function (response) {
     return response.json();
+  }).then(function (myJson) {
+    res = myJson;
+
+    // 成功查询
+    if (res.status == "200") {
+      document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
+    } else {
+      document.getElementById("result").innerHTML = res.error;
+      $('#resultModal').modal('show')
+    }
+
+  }).catch(function (err) {
+    alert("Unknow error. Please retry!");
+    console.log(err);
   })
-    .then(function (myJson) {
-      res = myJson;
+}
 
-      // 成功查询
-      if (res.status == "200") {
-        document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
-      } else {
-        document.getElementById("result").innerHTML = res.error;
-        $('#resultModal').modal('show')
-      }
+function loadKV() {
+  //清空本地存储
+  clearLocalStorage(); 
 
-    }).catch(function (err) {
-      alert("Unknow error. Please retry!");
-      console.log(err);
-    })
+  // 从KV中查询, cmd为 "qryall", 查询全部
+  fetch(apiSrv, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cmd: "qryall", password: document.querySelector("#passwordText").value })
+  }).then(function (response) {    
+    return response.json();
+  }).then(function (myJson) {
+    res = myJson;
+    // 成功查询
+    if (res.status == "200") {
+
+      // 遍历kvlist
+      res.kvlist.forEach(item => {      
+        keyPhrase = item.key;
+        valueLongURL = item.value;
+        // save to localStorage
+        localStorage.setItem(keyPhrase, valueLongURL);  
+      });
+
+    } else {
+      document.getElementById("result").innerHTML = res.error;
+      $('#resultModal').modal('show')
+    }
+  }).catch(function (err) {
+    alert("Unknow error. Please retry!");
+    console.log(err);
+  })
 }
 
 $(function () {

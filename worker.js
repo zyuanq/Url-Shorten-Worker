@@ -6,6 +6,7 @@ const config = {
   custom_link: true,//Allow users to customize the short url.
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
+  load_kv: false,//load all from kv
 }
 
 let index_html = "https://crazypeace.github.io/Url-Shorten-Worker/" + config.theme + "/index.html"
@@ -21,12 +22,12 @@ const html404 = `<!DOCTYPE html>
   </html>`
 
 let response_header = {
-  "content-type": "text/html;charset=UTF-8",
+  "Content-type": "text/html;charset=UTF-8;application/json",
 }
 
 if (config.cors == "on") {
   response_header = {
-    "content-type": "text/html;charset=UTF-8",
+    "Content-type": "text/html;charset=UTF-8;application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST",
     "Access-Control-Allow-Headers": "Content-Type",
@@ -181,6 +182,37 @@ async function handleRequest(request) {
         })
       } else {
         return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:shortURL not exist."}`, {
+          headers: response_header,
+        })
+      }
+    } else if (req_cmd == "qryall" && config.load_kv) {
+      let keyList = await LINKS.list()
+      if (keyList != null) {
+        let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "kvlist": []}`);
+        
+        // 遍历kvlist数组
+        keyList.forEach(item => {
+          let url = await LINKS.get(item.name);
+          // 添加新元素到列表
+          jsonObjectRetrun.kvlist.push({ "key": item.name, "value": url });
+        });        
+        
+        /*
+        for (var i = 0; i < keyList.keys.length; i++) {
+          let item = keyList.keys[i];
+          let url = await LINKS.get(item.name);
+          // 要添加的新元素
+          let newElement = { "key": item.name, "value": url };
+          // 添加新元素到列表
+          jsonObjectRetrun.kvlist.push(newElement);
+        }
+        */
+
+        return new Response(JSON.stringify(jsonObjectRetrun) , {
+          headers: response_header,
+        })
+      } else {
+        return new Response(`{"status":500, "error":"Error: Load keyList failed."}`, {
           headers: response_header,
         })
       }
