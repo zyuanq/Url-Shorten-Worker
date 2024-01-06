@@ -22,7 +22,7 @@ function shorturl() {
     document.getElementById("addBtn").disabled = false;
     document.getElementById("addBtn").innerHTML = 'Shorten it';
 
-    // 成功生成短链
+    // 成功生成短链 Succeed
     if (res.status == "200") {
       let keyPhrase = res.key;
       let valueLongURL = document.querySelector("#longURL").value;
@@ -101,7 +101,9 @@ function loadUrlList() {
     let valueLongURL = localStorage.getItem(keyShortURL)
 
     // 如果长链接为空，加载所有的localStorage
+    // If the long url textbox is empty, load all in localStorage
     // 如果长链接不为空，加载匹配的localStorage
+    // If the long url textbox is not empty, only load matched item in localStorage
     if (longUrl == "" || (longUrl == valueLongURL)) {
       addUrlToList(keyShortURL, valueLongURL)
     }
@@ -114,7 +116,7 @@ function addUrlToList(shortUrl, longUrl) {
   let child = document.createElement('div')
   child.classList.add("list-group-item")
 
-  // 删除按钮
+  // 删除按钮 Remove item button
   let delBtn = document.createElement('button')
   delBtn.setAttribute('type', 'button')
   delBtn.classList.add("btn", "btn-danger")
@@ -123,7 +125,7 @@ function addUrlToList(shortUrl, longUrl) {
   delBtn.innerText = "X"
   child.appendChild(delBtn)
 
-  // 查询访问次数按钮
+  // 查询访问次数按钮 Query visit times button
   let qryCntBtn = document.createElement('button')
   qryCntBtn.setAttribute('type', 'button')
   qryCntBtn.classList.add("btn", "btn-info")
@@ -132,13 +134,13 @@ function addUrlToList(shortUrl, longUrl) {
   qryCntBtn.innerText = "?"
   child.appendChild(qryCntBtn)
 
-  // 短链接信息
+  // 短链接信息 Short url
   let keyTxt = document.createElement('span')
   keyTxt.classList.add("lnk")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
   child.appendChild(keyTxt)
   
-  // 长链接信息
+  // 长链接信息 Long url
   let valueTxt = document.createElement('div')
   valueTxt.classList.add("lnk")
   valueTxt.innerText = longUrl
@@ -152,11 +154,11 @@ function clearLocalStorage() {
 }
 
 function deleteShortUrl(delKeyPhrase) {
-  // 按钮状态
+  // 按钮状态 Button Status
   document.getElementById("delBtn-" + delKeyPhrase).disabled = true;
   document.getElementById("delBtn-" + delKeyPhrase).innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
-  // 从KV中删除
+  // 从KV中删除 Remove item from KV
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -166,7 +168,7 @@ function deleteShortUrl(delKeyPhrase) {
   }).then(function (myJson) {
     res = myJson;
 
-    // 成功删除
+    // 成功删除 Succeed
     if (res.status == "200") {
       // 从localStorage中删除
       localStorage.removeItem(delKeyPhrase)
@@ -179,6 +181,7 @@ function deleteShortUrl(delKeyPhrase) {
       document.getElementById("result").innerHTML = res.error;
     }
 
+    // 弹出消息窗口 Popup the result
     $('#resultModal').modal('show')
 
   }).catch(function (err) {
@@ -188,11 +191,11 @@ function deleteShortUrl(delKeyPhrase) {
 }
 
 function queryVisitCount(qryKeyPhrase) {
-  // 按钮状态
+  // 按钮状态 Button Status
   document.getElementById("qryCntBtn-" + qryKeyPhrase).disabled = true;
   document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
-  // 从KV中查询
+  // 从KV中查询 Query from KV
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -202,7 +205,7 @@ function queryVisitCount(qryKeyPhrase) {
   }).then(function (myJson) {
     res = myJson;
 
-    // 成功查询
+    // 成功查询 Succeed
     if (res.status == "200") {
       document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
     } else {
@@ -229,7 +232,7 @@ function loadKV() {
     return response.json();
   }).then(function (myJson) {
     res = myJson;
-    // 成功查询
+    // 成功查询 Succeed
     if (res.status == "200") {
 
       // 遍历kvlist
