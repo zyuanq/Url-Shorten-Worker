@@ -6,7 +6,7 @@ const config = {
   custom_link: true,//Allow users to customize the short url.
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
-  load_kv: false,//load all from kv
+  load_kv: false,//Load all from Cloudflare KV
 }
 
 const can_not_del_keylist = [
@@ -40,7 +40,7 @@ if (config.cors == "on") {
 
 async function randomString(len) {
   len = len || 6;
-  let $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+  let $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /*去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1 *** Easily confused characters removed */
   let maxPos = $chars.length;
   let result = '';
   for (i = 0; i < len; i++) {
@@ -63,6 +63,7 @@ async function sha512(url) {
   //console.log(hashHex)
   return hashHex
 }
+
 async function checkURL(URL) {
   let str = URL;
   let Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
@@ -76,49 +77,50 @@ async function checkURL(URL) {
     return false;
   }
 }
+
 async function save_url(URL) {
   let random_key = await randomString()
   let is_exist = await LINKS.get(random_key)
-  console.log(is_exist)
+  // console.log(is_exist)
   if (is_exist == null) {
-    // 计数功能
-    if (config.visit_count) {
-      // 在保存链接的同时, 为其创建一个统计键并初始化为0
-      await LINKS.put(random_key + "-count", "0");
-    }
     return await LINKS.put(random_key, URL), random_key
   }
-  else
+  else {
     save_url(URL)
+  }
 }
+
 async function is_url_exist(url_sha512) {
   let is_exist = await LINKS.get(url_sha512)
-  console.log(is_exist)
+  // console.log(is_exist)
   if (is_exist == null) {
     return false
   } else {
     return is_exist
   }
 }
-async function handleRequest(request) {
-  console.log(request)
 
-  // 查KV中的password对应的值
+async function handleRequest(request) {
+  // console.log(request)
+
+  // 查KV中的password对应的值 Query "password" in KV
   const password_value = await LINKS.get("password");
 
   if (request.method === "POST") {
     let req = await request.json()
-    console.log(req)
+    // console.log(req)
 
     let req_cmd = req["cmd"]
     let req_url = req["url"]
     let req_key = req["key"]
     let req_password = req["password"]
 
+    /*
     console.log(req_cmd)
     console.log(req_url)
     console.log(req_key)
     console.log(req_password)
+    */
 
     if (req_password != password_value) {
       return new Response(`{"status":500,"key": "", "error":"Error: Invalid password."}`, {
@@ -152,13 +154,14 @@ async function handleRequest(request) {
         } else {
           stat, random_key = await save_url(req_url)
           if (typeof (stat) == "undefined") {
-            console.log(await LINKS.put(url_sha512, random_key))
+            await LINKS.put(url_sha512, random_key)
+            // console.log()
           }
         }
       } else {
         stat, random_key = await save_url(req_url)
       }
-      console.log(stat)
+      // console.log(stat)
       if (typeof (stat) == "undefined") {
         return new Response(`{"status":200, "key":"` + random_key + `", "error": ""}`, {
           headers: response_header,
@@ -177,7 +180,7 @@ async function handleRequest(request) {
 
       await LINKS.delete(req_key)
       
-      // 计数功能打开的话, 要把计数的那条KV也删掉
+      // 计数功能打开的话, 要把计数的那条KV也删掉 Remove the visit times record
       if (config.visit_count) {
         await LINKS.delete(req_key + "-count")
       }
@@ -205,14 +208,15 @@ async function handleRequest(request) {
 
       let keyList = await LINKS.list()
       if (keyList != null) {
+        // 初始化返回数据结构 Init the return struct
         let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "kvlist": []}`);
                 
         for (var i = 0; i < keyList.keys.length; i++) {
           let item = keyList.keys[i];
           let url = await LINKS.get(item.name);
-          // 要添加的新元素
+          
           let newElement = { "key": item.name, "value": url };
-          // 添加新元素到列表
+          // 填充要返回的列表 Fill the return list
           jsonObjectRetrun.kvlist.push(newElement);
         }       
 
@@ -237,8 +241,9 @@ async function handleRequest(request) {
   const path = requestURL.pathname.split("/")[1]
   const params = requestURL.search;
 
-  console.log(path)
-  // 如果path为空, 即直接访问网址
+  // console.log(path)
+  // 如果path为空, 即直接访问本worker
+  // If visit this worker directly (no path)
   if (!path) {
     return Response.redirect("https://zelikk.blogspot.com/search/label/Url-Shorten-Worker", 302)
     /* new Response(html404, {
@@ -249,7 +254,7 @@ async function handleRequest(request) {
     }) */
   }
 
-  // 如果path符合password 显示应用界面
+  // 如果path符合password 显示操作页面index.html
   if (path == password_value) {
     let index = await fetch(index_html)
     index = await index.text()
@@ -262,17 +267,11 @@ async function handleRequest(request) {
   }
 
   // 在KV中查询 短链接 对应的原链接
+  // Query the value(long url) in KV by key(short url)
   const value = await LINKS.get(path);
-  let location;
+  // console.log(value)
 
-  if (params) {
-    location = value + params
-  } else {
-    location = value
-  }
-  console.log(value)
-
-  if (location) {
+  if (value) {
     // 计数功能
     if (config.visit_count) {
       // 获取并增加访问计数
@@ -288,7 +287,17 @@ async function handleRequest(request) {
     // 如果阅后即焚模式
     if (config.snapchat_mode) {
       // 删除KV中的记录
+      // Remove record before jump to long url
       await LINKS.delete(path)
+    }
+
+    // 要跳转的最终网址
+    // URL to jump finally
+    let location;
+    if (params) {
+      location = value + params
+    } else {
+      location = value
     }
 
     if (config.no_ref == "on") {
@@ -303,15 +312,15 @@ async function handleRequest(request) {
     } else {
       return Response.redirect(location, 302)
     }
+  } else {  
+    // If request not in KV, return 404
+    return new Response(html404, {
+      headers: {
+        "content-type": "text/html;charset=UTF-8",
+      },
+      status: 404
+    })
   }
-  
-  // If request not in kv, return 404
-  return new Response(html404, {
-    headers: {
-      "content-type": "text/html;charset=UTF-8",
-    },
-    status: 404
-  })
 }
 
 addEventListener("fetch", async event => {
