@@ -9,7 +9,7 @@ const config = {
   load_kv: false,//Load all from Cloudflare KV
 }
 
-const can_not_del_keylist = [
+const protect_keylist = [
   "password",
 ]
 
@@ -172,8 +172,8 @@ async function handleRequest(request) {
         })
       }
     } else if (req_cmd == "del") {
-      if (can_not_del_keylist.includes(req_key)) {
-        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:key in can_not_del_keylist."}`, {
+      if (protect_keylist.includes(req_key)) {
+        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:key in protect_keylist."}`, {
           headers: response_header,
         })
       }
