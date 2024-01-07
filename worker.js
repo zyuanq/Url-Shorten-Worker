@@ -7,6 +7,7 @@ const config = {
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
   load_kv: false,//Load all from Cloudflare KV
+  shorturl_system: true,//Check value is valid URL && 302 jump to the value
 }
 
 const protect_keylist = [
@@ -106,6 +107,9 @@ async function handleRequest(request) {
   // 查KV中的password对应的值 Query "password" in KV
   const password_value = await LINKS.get("password");
 
+  /************************/
+  // 以下是API接口的处理
+
   if (request.method === "POST") {
     let req = await request.json()
     // console.log(req)
@@ -129,17 +133,24 @@ async function handleRequest(request) {
     }
 
     if (req_cmd == "add") {
-      if (!await checkURL(req_url)) {
+      if (config.shorturl_system && !await checkURL(req_url)) {
         return new Response(`{"status":500, "url": "` + req_url + `", "error":"Error: Url illegal."}`, {
           headers: response_header,
         })
-      }
+      }      
 
       let stat, random_key
       if (config.custom_link && (req_key != "")) {
+        // Refuse 'password" as Custom shortURL
+        if (protect_keylist.includes(req_key)) {
+          return new Response(`{"status":500,"key": "` + req_key + `", "error":"Error: Key in protect_keylist."}`, {
+            headers: response_header,
+          })
+        }
+
         let is_exist = await LINKS.get(req_key)
         if (is_exist != null) {
-          return new Response(`{"status":500,"key": "` + req_key + `", "error":"Error: Custom shortURL existed."}`, {
+          return new Response(`{"status":500,"key": "` + req_key + `", "error":"Error: Specific key existed."}`, {
             headers: response_header,
           })
         } else {
@@ -167,13 +178,13 @@ async function handleRequest(request) {
           headers: response_header,
         })
       } else {
-        return new Response(`{"status":500, "key": "", "error":"Error:Reach the KV write limitation."}`, {
+        return new Response(`{"status":500, "key": "", "error":"Error: Reach the KV write limitation."}`, {
           headers: response_header,
         })
       }
     } else if (req_cmd == "del") {
       if (protect_keylist.includes(req_key)) {
-        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:key in protect_keylist."}`, {
+        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error: Key in protect_keylist."}`, {
           headers: response_header,
         })
       }
@@ -195,13 +206,13 @@ async function handleRequest(request) {
           headers: response_header,
         })
       } else {
-        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error:shortURL not exist."}`, {
+        return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error: Key not exist."}`, {
           headers: response_header,
         })
       }
     } else if (req_cmd == "qryall") {
       if ( !config.load_kv) {
-        return new Response(`{"status":500, "error":"Error: config.load_kv false."}`, {
+        return new Response(`{"status":500, "error":"Error: Config.load_kv false."}`, {
           headers: response_header,
         })
       }
@@ -236,6 +247,9 @@ async function handleRequest(request) {
       headers: response_header,
     })
   }
+
+  /************************/
+  // 以下是浏览器直接访问worker页面的处理
 
   const requestURL = new URL(request.url)
   const path = requestURL.pathname.split("/")[1]
@@ -291,26 +305,34 @@ async function handleRequest(request) {
       await LINKS.delete(path)
     }
 
-    // 要跳转的最终网址
-    // URL to jump finally
-    let location;
-    if (params) {
-      location = value + params
-    } else {
-      location = value
-    }
+    // 作为一个短链系统, value就是long URL, 需要跳转
+    if (config.shorturl_system) {
+      // 带上参数部分, 拼装要跳转的最终网址
+      // URL to jump finally
+      let location;
+      if (params) {
+        location = value + params
+      } else {
+        location = value
+      }
 
-    if (config.no_ref == "on") {
-      let no_ref = await fetch(no_ref_html)
-      no_ref = await no_ref.text()
-      no_ref = no_ref.replace(/{Replace}/gm, location)
-      return new Response(no_ref, {
-        headers: {
-          "content-type": "text/html;charset=UTF-8",
-        },
-      })
+      if (config.no_ref == "on") {
+        let no_ref = await fetch(no_ref_html)
+        no_ref = await no_ref.text()
+        no_ref = no_ref.replace(/{Replace}/gm, location)
+        return new Response(no_ref, {
+          headers: {
+            "content-type": "text/html;charset=UTF-8",
+          },
+        })
+      } else {
+        return Response.redirect(location, 302)
+      }
     } else {
-      return Response.redirect(location, 302)
+      // 如果只是一个单纯的key-value系统, 简单的显示value就行了
+      return new Response(value, {
+        headers: response_header,
+      })
     }
   } else {  
     // If request not in KV, return 404
