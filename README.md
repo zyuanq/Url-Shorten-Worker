@@ -50,3 +50,7 @@ https://zelikk.blogspot.com/2023/11/url-shorten-worker-snapchat-mode.html
 增加读取 KV 中全部记录的功能
 
 https://zelikk.blogspot.com/2024/01/url-shorten-worker-load-cloudflare-kv.html
+
+变身网络记事本 Pastebin 
+
+https://zelikk.blogspot.com/2024/01/url-shorten-worker-pastebin.html
