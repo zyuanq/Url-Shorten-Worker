@@ -35,7 +35,7 @@ https://zelikk.blogspot.com/2022/08/url-shorten-worker-localstorage.html
 
 https://zelikk.blogspot.com/2022/08/url-shorten-worker-bootstrap-list-group-oninput.html
 
-增加删除某条短链的按钮
+增加按钮可以删除某条短链
 
 https://zelikk.blogspot.com/2022/08/url-shorten-worker-delete-kv-localstorage.html
 
