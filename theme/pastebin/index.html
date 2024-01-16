@@ -18,8 +18,8 @@
 
       <div class="input-group mb-3">
         <label>记事本内容</label>
-        <form>
-          <textarea rows="5" cols="60" id="longURL" placeholder="输入文本" oninput="loadUrlList()"></textarea>
+        <form class="input-group mb-3">
+          <textarea class="form-control" id="longURL" placeholder="输入文本" oninput="loadUrlList()"></textarea>
         </form>
       </div>
 
@@ -36,7 +36,7 @@
 
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon3">使用密码</span>
+          <span class="input-group-text" id="basic-addon3">本系统密码</span>
         </div>
         <input class="form-control" type="text" value="__PASSWORD__" readonly="true" id="passwordText" aria-describedby="basic-addon3">
         <!--
