@@ -4,7 +4,7 @@ https://1way.eu.org/mtSzm6
 # 完整的部署教程
 https://zelikk.blogspot.com/2022/07/url-shorten-worker-hide-tutorial.html
 
-## 如果不想被原作者的更新影响
+## 如果不想被作者的更新影响
 - Fork一份自己的Repo.
   
 - 在Cloudflare的worker.js中搜索`"https://crazypeace.github.io/Url-Shorten-Worker/" + config.theme + "/index.html"`, 把其中的`crazypeace`改为你自己的, 这样Cloudflare的worker就会拉你自己的这一份index.html
