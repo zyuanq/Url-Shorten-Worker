@@ -10,6 +10,7 @@ const config = {
   shorturl_system: true,//Check value is valid URL && 302 jump to the value
 }
 
+// key in protect_keylist can't read, add, del from UI and API
 const protect_keylist = [
   "password",
 ]
@@ -183,6 +184,7 @@ async function handleRequest(request) {
         })
       }
     } else if (req_cmd == "del") {
+      // Refuse to delete 'password' entry
       if (protect_keylist.includes(req_key)) {
         return new Response(`{"status":500, "key": "` + req_key + `", "error":"Error: Key in protect_keylist."}`, {
           headers: response_header,
@@ -200,6 +202,13 @@ async function handleRequest(request) {
         headers: response_header,
       })
     } else if (req_cmd == "qry") {
+      // Refuse to query 'password'
+      if (protect_keylist.includes(req_key)) {
+        return new Response(`{"status":500,"key": "` + req_key + `", "error":"Error: Key in protect_keylist."}`, {
+          headers: response_header,
+        })
+      }
+
       let value = await LINKS.get(req_key)
       if (value != null) {
         return new Response(`{"status":200, "key": "` + req_key + `", "url": "` + value + `", "error":""}`, {
@@ -224,6 +233,10 @@ async function handleRequest(request) {
                 
         for (var i = 0; i < keyList.keys.length; i++) {
           let item = keyList.keys[i];
+          // Hide 'password' from the query all result
+          if (protect_keylist.includes(item.name)) {
+            continue;
+          }
           let url = await LINKS.get(item.name);
           
           let newElement = { "key": item.name, "value": url };
