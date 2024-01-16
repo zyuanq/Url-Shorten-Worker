@@ -136,13 +136,13 @@ function addUrlToList(shortUrl, longUrl) {
 
   // 短链接信息 Short url
   let keyTxt = document.createElement('span')
-  keyTxt.classList.add("lnk")
+  keyTxt.classList.add("key")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
   child.appendChild(keyTxt)
   
   // 长链接信息 Long url
   let valueTxt = document.createElement('div')
-  valueTxt.classList.add("lnk")
+  valueTxt.classList.add("value")
   valueTxt.innerText = longUrl
   child.appendChild(valueTxt)
 
