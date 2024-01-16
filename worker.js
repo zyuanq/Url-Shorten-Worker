@@ -237,6 +237,11 @@ async function handleRequest(request) {
           if (protect_keylist.includes(item.name)) {
             continue;
           }
+          // Hide '-count' from the query all result
+          if (item.name.endsWith("-count")) {
+            continue;
+          }
+
           let url = await LINKS.get(item.name);
           
           let newElement = { "key": item.name, "value": url };
