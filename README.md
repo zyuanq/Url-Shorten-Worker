@@ -54,3 +54,9 @@ https://zelikk.blogspot.com/2024/01/url-shorten-worker-load-cloudflare-kv.html
 变身网络记事本 Pastebin 
 
 https://zelikk.blogspot.com/2024/01/url-shorten-worker-pastebin.html
+
+
+保护 'password' key
+
+https://zelikk.blogspot.com/2024/01/url-shorten-worker-password-protect-keylist.html
+
