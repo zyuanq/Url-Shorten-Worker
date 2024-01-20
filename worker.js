@@ -138,7 +138,7 @@ async function handleRequest(request) {
         return new Response(`{"status":500, "url": "` + req_url + `", "error":"Error: Url illegal."}`, {
           headers: response_header,
         })
-      }      
+      }
 
       let stat, random_key
       if (config.custom_link && (req_key != "")) {
@@ -247,7 +247,7 @@ async function handleRequest(request) {
           let newElement = { "key": item.name, "value": url };
           // 填充要返回的列表 Fill the return list
           jsonObjectRetrun.kvlist.push(newElement);
-        }       
+        }
 
         return new Response(JSON.stringify(jsonObjectRetrun) , {
           headers: response_header,
@@ -300,8 +300,13 @@ async function handleRequest(request) {
 
   // 在KV中查询 短链接 对应的原链接
   // Query the value(long url) in KV by key(short url)
-  const value = await LINKS.get(path);
+  let value = await LINKS.get(path);
   // console.log(value)
+
+  // 如果path是'password', 让查询结果为空, 不然直接就把password查出来了
+  if (protect_keylist.includes(path)) {
+    value = ""
+  }
 
   if (value) {
     // 计数功能
@@ -352,7 +357,7 @@ async function handleRequest(request) {
         headers: response_header,
       })
     }
-  } else {  
+  } else {
     // If request not in KV, return 404
     return new Response(html404, {
       headers: {
