@@ -7,7 +7,7 @@ const config = {
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
   load_kv: false,//Load all from Cloudflare KV
-  shorturl_system: true,//Check value is valid URL && 302 jump to the value
+  system_type: "shorturl", // shorturl, pastebin, imghost,
 }
 
 // key in protect_keylist can't read, add, del from UI and API
@@ -38,6 +38,18 @@ if (config.cors == "on") {
     "Access-Control-Allow-Methods": "POST",
     "Access-Control-Allow-Headers": "Content-Type",
   }
+}
+
+function base64ToBlob(base64String) {
+  var parts = base64String.split(';base64,');
+  var contentType = parts[0].split(':')[1];
+  var raw = atob(parts[1]);
+  var rawLength = raw.length;
+  var uInt8Array = new Uint8Array(rawLength);
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], { type: contentType });
 }
 
 async function randomString(len) {
@@ -134,7 +146,7 @@ async function handleRequest(request) {
     }
 
     if (req_cmd == "add") {
-      if (config.shorturl_system && !await checkURL(req_url)) {
+      if ((config.system_type == "shorturl") && !await checkURL(req_url)) {
         return new Response(`{"status":500, "url": "` + req_url + `", "error":"Error: Url illegal."}`, {
           headers: response_header,
         })
@@ -329,7 +341,7 @@ async function handleRequest(request) {
     }
 
     // 作为一个短链系统, value就是long URL, 需要跳转
-    if (config.shorturl_system) {
+    if (config.system_type == "shorturl") {
       // 带上参数部分, 拼装要跳转的最终网址
       // URL to jump finally
       let location;
@@ -351,10 +363,16 @@ async function handleRequest(request) {
       } else {
         return Response.redirect(location, 302)
       }
+    } else if (config.system_type == "imghost") {
+      // 如果是图床      
+      var blob = base64ToBlob(value)
+      return new Response(blob, {
+        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+      })
     } else {
       // 如果只是一个单纯的key-value系统, 简单的显示value就行了
       return new Response(value, {
-        headers: response_header,
+        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
       })
     }
   } else {
