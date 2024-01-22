@@ -254,7 +254,7 @@ function loadKV() {
 }
 
 $(function () {
-  $('[data-toggle="popover"]').popover()
+  $('[data-bs-toggle="popover"]').popover()
 })
 
 loadUrlList()
