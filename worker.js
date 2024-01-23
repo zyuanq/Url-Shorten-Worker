@@ -354,7 +354,7 @@ async function handleRequest(request) {
       if (config.no_ref == "on") {
         let no_ref = await fetch(no_ref_html)
         no_ref = await no_ref.text()
-        no_ref = no_ref.replace(/{Replace}/gm, location)
+        no_ref = no_ref.replace(/{__FINAL_LINK__}/gm, location)
         return new Response(no_ref, {
           headers: {
             "content-type": "text/html;charset=UTF-8",
