@@ -55,8 +55,11 @@ https://zelikk.blogspot.com/2024/01/url-shorten-worker-load-cloudflare-kv.html
 
 https://zelikk.blogspot.com/2024/01/url-shorten-worker-pastebin.html
 
-
 保护 'password' key
 
 https://zelikk.blogspot.com/2024/01/url-shorten-worker-password-protect-keylist.html
+
+变身图床 Image Hosting
+
+https://zelikk.blogspot.com/2024/01/url-shorten-worker-image-hosting-base64.html
 
