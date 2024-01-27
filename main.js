@@ -41,8 +41,9 @@ function shorturl() {
       document.getElementById("result").innerHTML = res.error;
     }
 
-    // 显示结果
-    document.getElementById('resultModal').classList.add('show');
+    // 弹出消息窗口 Popup the result
+    var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+    modal.show();
 
   }).catch(function (err) {
     alert("Unknow error. Please retry!");
@@ -192,7 +193,8 @@ function deleteShortUrl(delKeyPhrase) {
     }
 
     // 弹出消息窗口 Popup the result
-    document.getElementById('resultModal').classList.add('show');
+    var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+    modal.show();
 
   }).catch(function (err) {
     alert("Unknow error. Please retry!");
@@ -220,7 +222,9 @@ function queryVisitCount(qryKeyPhrase) {
       document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
     } else {
       document.getElementById("result").innerHTML = res.error;
-      document.getElementById('resultModal').classList.add('show');
+      // 弹出消息窗口 Popup the result
+      var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+      modal.show();
     }
 
   }).catch(function (err) {
@@ -255,7 +259,9 @@ function loadKV() {
 
     } else {
       document.getElementById("result").innerHTML = res.error;
-      document.getElementById('resultModal').classList.add('show');
+      // 弹出消息窗口 Popup the result
+      var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+      modal.show();
     }
   }).catch(function (err) {
     alert("Unknow error. Please retry!");

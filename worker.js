@@ -54,11 +54,11 @@ function base64ToBlob(base64String) {
 
 async function randomString(len) {
   len = len || 6;
-  let $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /*去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1 *** Easily confused characters removed */
-  let maxPos = $chars.length;
+  let chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /*去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1 *** Easily confused characters removed */
+  let maxPos = chars.length;
   let result = '';
   for (i = 0; i < len; i++) {
-    result += $chars.charAt(Math.floor(Math.random() * maxPos));
+    result += chars.charAt(Math.floor(Math.random() * maxPos));
   }
   return result;
 }
