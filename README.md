@@ -1,5 +1,9 @@
 # 演示
-https://1way.eu.org/mtSzm6
+短链系统 https://1way.eu.org/bodongshouqulveweifengci
+
+网络记事本 Pastebin https://pastebin.icdyct.cloudns.asia/tieludasiliqiuweiyue
+
+图床 Image Hosting https://imghost.crazypeace.workers.dev/imghostimghost
 
 # 完整的部署教程
 https://zelikk.blogspot.com/2022/07/url-shorten-worker-hide-tutorial.html
