@@ -1,7 +1,12 @@
 let res
 
-// let apiSrv = "https://1way.eu.org"
 let apiSrv = window.location.pathname
+// let apiSrv = "https://pastebin.icdyct.cloudns.asia"
+let password_value = document.querySelector("#passwordText").value
+// let password_value = "tieludasiliqiuweiyue"
+
+// 这是默认行为, 在不同的index.html中可以设置为不同的行为
+let buildValueItemFunc = buildValueTxt
 
 function shorturl() {
   if (document.querySelector("#longURL").value == "") {
@@ -14,7 +19,7 @@ function shorturl() {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "add", url: document.querySelector("#longURL").value, key: document.querySelector("#keyPhrase").value, password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "add", url: document.querySelector("#longURL").value, key: document.querySelector("#keyPhrase").value, password: password_value })
   }).then(function (response) {
     return response.json();
   }).then(function (myJson) {
@@ -114,7 +119,11 @@ function addUrlToList(shortUrl, longUrl) {
   let urlList = document.querySelector("#urlList")
 
   let child = document.createElement('div')
+  child.classList.add("mb-3")
   child.classList.add("list-group-item")
+
+  let keyItem = document.createElement('div')
+  keyItem.classList.add("input-group")
 
   // 删除按钮 Remove item button
   let delBtn = document.createElement('button')
@@ -123,7 +132,7 @@ function addUrlToList(shortUrl, longUrl) {
   delBtn.setAttribute('onclick', 'deleteShortUrl(\"' + shortUrl + '\")')
   delBtn.setAttribute('id', 'delBtn-' + shortUrl)
   delBtn.innerText = "X"
-  child.appendChild(delBtn)
+  keyItem.appendChild(delBtn)
 
   // 查询访问次数按钮 Query visit times button
   let qryCntBtn = document.createElement('button')
@@ -132,19 +141,19 @@ function addUrlToList(shortUrl, longUrl) {
   qryCntBtn.setAttribute('onclick', 'queryVisitCount(\"' + shortUrl + '\")')
   qryCntBtn.setAttribute('id', 'qryCntBtn-' + shortUrl)
   qryCntBtn.innerText = "?"
-  child.appendChild(qryCntBtn)
+  keyItem.appendChild(qryCntBtn)
 
   // 短链接信息 Short url
   let keyTxt = document.createElement('span')
   keyTxt.classList.add("key")
+  keyTxt.classList.add("form-control")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
-  child.appendChild(keyTxt)
+  keyItem.appendChild(keyTxt)
   
+  child.appendChild(keyItem)
+
   // 长链接信息 Long url
-  let valueTxt = document.createElement('div')
-  valueTxt.classList.add("value")
-  valueTxt.innerText = longUrl
-  child.appendChild(valueTxt)
+  child.appendChild(buildValueItemFunc(longUrl))
 
   urlList.append(child)
 }
@@ -162,7 +171,7 @@ function deleteShortUrl(delKeyPhrase) {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "del", key: delKeyPhrase, password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "del", key: delKeyPhrase, password: password_value })
   }).then(function (response) {
     return response.json();
   }).then(function (myJson) {
@@ -199,7 +208,7 @@ function queryVisitCount(qryKeyPhrase) {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase + "-count", password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase + "-count", password: password_value })
   }).then(function (response) {
     return response.json();
   }).then(function (myJson) {
@@ -227,7 +236,7 @@ function loadKV() {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "qryall", password: document.querySelector("#passwordText").value })
+    body: JSON.stringify({ cmd: "qryall", password: password_value })
   }).then(function (response) {    
     return response.json();
   }).then(function (myJson) {
@@ -253,8 +262,37 @@ function loadKV() {
   })
 }
 
-$(function () {
-  $('[data-bs-toggle="popover"]').popover()
-})
+function buildValueTxt(longUrl) {
+  let valueTxt = document.createElement('div')
+  valueTxt.classList.add("value")
+  valueTxt.classList.add("form-control")
+  valueTxt.innerText = longUrl
+  return valueTxt
+}
 
-loadUrlList()
+function buildValueImg(longUrl) {
+  let valueImg = document.createElement('img')
+  valueImg.classList.add("value")
+  valueImg.classList.add("img-thumbnail")
+  valueImg.src = longUrl
+  return valueImg
+}
+
+function buildValueTxtarea(longUrl) {
+  let valueDiv = document.createElement('div')
+  valueDiv.classList.add("value")
+  let valueTxt = document.createElement('textarea')
+  valueTxt.classList.add("form-control")  
+  valueTxt.innerText = longUrl
+  valueDiv.appendChild(valueTxt)
+  return valueDiv
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+  });
+
+  loadUrlList();
+});
