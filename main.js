@@ -41,7 +41,8 @@ function shorturl() {
       document.getElementById("result").innerHTML = res.error;
     }
 
-    $('#resultModal').modal('show')
+    // 显示结果
+    document.getElementById('resultModal').classList.add('show');
 
   }).catch(function (err) {
     alert("Unknow error. Please retry!");
@@ -191,7 +192,7 @@ function deleteShortUrl(delKeyPhrase) {
     }
 
     // 弹出消息窗口 Popup the result
-    $('#resultModal').modal('show')
+    document.getElementById('resultModal').classList.add('show');
 
   }).catch(function (err) {
     alert("Unknow error. Please retry!");
@@ -219,7 +220,7 @@ function queryVisitCount(qryKeyPhrase) {
       document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
     } else {
       document.getElementById("result").innerHTML = res.error;
-      $('#resultModal').modal('show')
+      document.getElementById('resultModal').classList.add('show');
     }
 
   }).catch(function (err) {
@@ -254,7 +255,7 @@ function loadKV() {
 
     } else {
       document.getElementById("result").innerHTML = res.error;
-      $('#resultModal').modal('show')
+      document.getElementById('resultModal').classList.add('show');
     }
   }).catch(function (err) {
     alert("Unknow error. Please retry!");
