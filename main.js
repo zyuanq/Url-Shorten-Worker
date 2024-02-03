@@ -147,7 +147,6 @@ function addUrlToList(shortUrl, longUrl) {
 
   // 短链接信息 Short url
   let keyTxt = document.createElement('span')
-  keyTxt.classList.add("key")
   keyTxt.classList.add("form-control")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
   keyItem.appendChild(keyTxt)
@@ -271,7 +270,6 @@ function loadKV() {
 
 function buildValueTxt(longUrl) {
   let valueTxt = document.createElement('div')
-  valueTxt.classList.add("value")
   valueTxt.classList.add("form-control")
   valueTxt.innerText = longUrl
   return valueTxt
@@ -279,20 +277,16 @@ function buildValueTxt(longUrl) {
 
 function buildValueImg(longUrl) {
   let valueImg = document.createElement('img')
-  valueImg.classList.add("value")
   valueImg.classList.add("img-thumbnail")
   valueImg.src = longUrl
   return valueImg
 }
 
 function buildValueTxtarea(longUrl) {
-  let valueDiv = document.createElement('div')
-  valueDiv.classList.add("value")
   let valueTxt = document.createElement('textarea')
   valueTxt.classList.add("form-control")  
   valueTxt.innerText = longUrl
-  valueDiv.appendChild(valueTxt)
-  return valueDiv
+  return valueTxt
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <title>Image Hosting</title>
-  <link rel="stylesheet" href="https://crazypeace.github.io/Url-Shorten-Worker/styles.css">
-  <!--
+  <!-- <link rel="stylesheet" href="https://crazypeace.github.io/Url-Shorten-Worker/styles.css"> -->
+  <link rel="stylesheet" href="../../styles.css">
+  <!-- 如果使用CDN资源就放开这一句, 把上面那一句注释掉
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crazypeace/Url-Shorten-Worker/styles.css">
   -->
 </head>
 <body>
-
+  <div class="d-flex align-items-start flex-wrap">
   <div class="card shadow m-3">
     <h5 class="card-header">图片转为base64编码</h5>
     <div class="card-body">
@@ -27,15 +28,13 @@
       </div>
 
       <div class="form-floating mb-3">
-        <textarea class="form-control" placeholder="Leave a comment here" id="area_base64" onpaste="setTimeout(base64ToImage, 1)"></textarea>
+        <textarea class="form-control" placeholder="" id="area_base64" onpaste="setTimeout(base64ToImage, 1)"></textarea>
         <label for="area_base64">Base64编码</label>
       </div>
 
       <div>
         <button class="btn btn-info" type="button" onclick='syncKeyValue()'>Next</button>
       </div>
-    </div>
-    <div class="card-footer">
     </div>
   </div>
 
@@ -44,9 +43,9 @@
     <div class="card-body">
       <h5 class="card-title"> </h5>
       <div class="input-group mb-3">
-        <label>图片Base64编码</label>
-        <div class="input-group mb-3">
-          <textarea class="form-control" id="longURL" placeholder="" oninput="loadUrlList()"></textarea>
+        <div class="form-floating mb-3">
+          <textarea class="form-control" placeholder="" id="longURL" oninput="loadUrlList()"></textarea>
+          <label for="longURL">Base64编码</label>
         </div>
       </div>
 
@@ -64,6 +63,17 @@
         <input class="form-control" type="text" value="__PASSWORD__" readonly="true" id="passwordText" aria-describedby="basic-addon3">
       </div>
 
+    </div>
+    
+    <div class="card-footer">
+      <span> <a href="https://github.com/crazypeace/Url-Shorten-Worker/" target="_self">Fork me on GitHub</a> </span>
+    </div>
+  </div>
+
+  <div class="card shadow m-3">
+    <h5 class="card-header">LocalStorage List</h5>
+    <div class="card-body">
+      <h5 class="card-title"> </h5>
       <div class="input-group mb-3">
         <button class="btn btn-success" type="button" onclick='loadUrlList()' id="loadListBtn">load localStorage</button>
         <button class="btn btn-danger" type="button" onclick='clearLocalStorage()' id="clearlocalStgBtn">clear localStorage</button>
@@ -72,27 +82,22 @@
 
       <div class="card-text">
         <div classs="list-group" id="urlList">
-          <div class="list-group-item">
-            <button type="button" class="btn btn-danger" onclick='deleteShortUrl("4rEbzm")'>X</button>
-            <button type="button" class="btn btn-info" onclick='queryVisitCount("4rEbzm")'>?</button>
-            <span>somesomesomesome</span>
-            <span>texttexttexttexttexttexttexttext</span>
-          </div>
-          <div class="list-group-item">
-            <button type="button" class="btn btn-danger" onclick='deleteShortUrl("8NKY34")'>X</button>
-            <button type="button" class="btn btn-info" onclick='queryVisitCount("8NKY34")'>?</button>
-            <span>somesomesomesomesomesomesomesome</span>
-            <span>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</span>
+          <div class="mb-3 list-group-item">
+            <div class="input-group">
+              <button type="button" class="btn btn-danger" onclick='deleteShortUrl("4sure")' id="delBtn-4sure">X</button>
+              <button type="button" class="btn btn-info" onclick='queryVisitCount("4sure")' id="qryCntBtn-4sure">?</button>
+              <span class="form-control">https://1way.eu.org/4sure</span>
+            </div>
+            <div class="form-control">
+              https://en.y2mate.is/s36/youtube-to-mp3.html
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <div class="card-footer">
-      <span> <a href="https://github.com/crazypeace/Url-Shorten-Worker/" target="_self">Fork me on GitHub</a> </span>
-    </div>
   </div>
-
+  </div>
+  
   <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -160,7 +165,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
   <script src="https://crazypeace.github.io/Url-Shorten-Worker/main.js" crossorigin="anonymous"></script>
-  <!-- 如果开CDN就使用这一段
+  <!-- 如果使用CDN资源就放开这一句, 把上面那一句注释掉
     <script src="https://cdn.jsdelivr.net/gh/crazypeace/Url-Shorten-Worker/main.js" crossorigin="anonymous"></script>
   -->
   <script>
