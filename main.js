@@ -1,9 +1,9 @@
 let res
 
-// let apiSrv = window.location.pathname
-// let password_value = document.querySelector("#passwordText").value
-let apiSrv = "https://journal.crazypeace.workers.dev"
-let password_value = "journaljournal"
+let apiSrv = window.location.pathname
+let password_value = document.querySelector("#passwordText").value
+// let apiSrv = "https://journal.crazypeace.workers.dev"
+// let password_value = "journaljournal"
 
 // 这是默认行为, 在不同的index.html中可以设置为不同的行为
 let buildValueItemFunc = buildValueTxt
