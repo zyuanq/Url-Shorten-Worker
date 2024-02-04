@@ -135,6 +135,11 @@
       // 文件名中的空格转换为"-"连字符
       document.getElementById('keyPhrase').value = document.getElementById('input_file').files[0].name.replace(/\s/g, "-");
       document.getElementById('longURL').value = document.getElementById('area_base64').value;
+      // 触发input事件
+      document.getElementById("longURL").dispatchEvent(new Event('input', {
+        bubbles: true,
+        cancelable: true,
+      }))
     }
 
     function loadImage(file) {
@@ -168,7 +173,13 @@
   <!-- 如果使用CDN资源就放开这一句, 把上面那一句注释掉
     <script src="https://cdn.jsdelivr.net/gh/crazypeace/Url-Shorten-Worker/main.js" crossorigin="anonymous"></script>
   -->
-  <script>
+  <script>    
+    function buildValueImg(longUrl) {
+      let valueImg = document.createElement('img')
+      valueImg.classList.add("img-thumbnail")
+      valueImg.src = longUrl
+      return valueImg
+    }
     // 函数的定义在 main.js 中
     buildValueItemFunc = buildValueImg    
   </script>

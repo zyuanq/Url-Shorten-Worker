@@ -234,7 +234,9 @@ function queryVisitCount(qryKeyPhrase) {
 
 function query1KV() {
   let qryKeyPhrase = document.getElementById("keyForQuery").value;
-  // console.log(qryKeyPhrase);
+  if (qryKeyPhrase == "") {
+    return
+  }
 
   // 从KV中查询 Query from KV
   fetch(apiSrv, {
@@ -250,6 +252,11 @@ function query1KV() {
     if (res.status == "200") {
       document.getElementById("longURL").value = res.url;
       document.getElementById("keyPhrase").value = qryKeyPhrase;
+      // 触发input事件
+      document.getElementById("longURL").dispatchEvent(new Event('input', {
+        bubbles: true,
+        cancelable: true,
+      }))
     } else {
       document.getElementById("result").innerHTML = res.error;
       // 弹出消息窗口 Popup the result
@@ -302,20 +309,6 @@ function loadKV() {
 function buildValueTxt(longUrl) {
   let valueTxt = document.createElement('div')
   valueTxt.classList.add("form-control")
-  valueTxt.innerText = longUrl
-  return valueTxt
-}
-
-function buildValueImg(longUrl) {
-  let valueImg = document.createElement('img')
-  valueImg.classList.add("img-thumbnail")
-  valueImg.src = longUrl
-  return valueImg
-}
-
-function buildValueTxtarea(longUrl) {
-  let valueTxt = document.createElement('textarea')
-  valueTxt.classList.add("form-control")  
   valueTxt.innerText = longUrl
   return valueTxt
 }

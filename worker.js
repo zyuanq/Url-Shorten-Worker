@@ -8,7 +8,7 @@ const config = {
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
   load_kv: false,//Load all from Cloudflare KV
-  system_type: "shorturl", // shorturl, pastebin, imghost,
+  system_type: "shorturl", // shorturl, pastebin, imghost, journal
 }
 
 // key in protect_keylist can't read, add, del from UI and API
@@ -224,7 +224,10 @@ async function handleRequest(request) {
 
       let value = await LINKS.get(req_key)
       if (value != null) {
-        return new Response(`{"status":200, "key": "` + req_key + `", "url": "` + value + `", "error":""}`, {
+        let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "url":""}`);
+        jsonObjectRetrun.key = req_key;
+        jsonObjectRetrun.url = value;
+        return new Response(JSON.stringify(jsonObjectRetrun), {
           headers: response_header,
         })
       } else {
