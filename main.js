@@ -1,9 +1,9 @@
 let res
 
-let apiSrv = window.location.pathname
-// let apiSrv = "https://pastebin.icdyct.cloudns.asia"
-let password_value = document.querySelector("#passwordText").value
-// let password_value = "tieludasiliqiuweiyue"
+// let apiSrv = window.location.pathname
+// let password_value = document.querySelector("#passwordText").value
+let apiSrv = "https://journal.crazypeace.workers.dev"
+let password_value = "journaljournal"
 
 // 这是默认行为, 在不同的index.html中可以设置为不同的行为
 let buildValueItemFunc = buildValueTxt
@@ -219,6 +219,37 @@ function queryVisitCount(qryKeyPhrase) {
     // 成功查询 Succeed
     if (res.status == "200") {
       document.getElementById("qryCntBtn-" + qryKeyPhrase).innerHTML = res.url;
+    } else {
+      document.getElementById("result").innerHTML = res.error;
+      // 弹出消息窗口 Popup the result
+      var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+      modal.show();
+    }
+
+  }).catch(function (err) {
+    alert("Unknow error. Please retry!");
+    console.log(err);
+  })
+}
+
+function query1KV() {
+  let qryKeyPhrase = document.getElementById("keyForQuery").value;
+  // console.log(qryKeyPhrase);
+
+  // 从KV中查询 Query from KV
+  fetch(apiSrv, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase, password: password_value })
+  }).then(function (response) {
+    return response.json();
+  }).then(function (myJson) {
+    res = myJson;
+
+    // 成功查询 Succeed
+    if (res.status == "200") {
+      document.getElementById("longURL").value = res.url;
+      document.getElementById("keyPhrase").value = qryKeyPhrase;
     } else {
       document.getElementById("result").innerHTML = res.error;
       // 弹出消息窗口 Popup the result
