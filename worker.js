@@ -273,9 +273,7 @@ async function handleRequest(request) {
           headers: response_header,
         })
       }
-
     }
-
   } else if (request.method === "OPTIONS") {
     return new Response(``, {
       headers: response_header,
