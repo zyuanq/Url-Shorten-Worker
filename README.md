@@ -5,6 +5,8 @@
 
 图床 Image Hosting https://imghost.crazypeace.workers.dev/imghostimghost
 
+网络日记本 NetJournal 支持Markdown https://journal.crazypeace.workers.dev/journaljournal
+
 # 完整的部署教程
 https://zelikk.blogspot.com/2022/07/url-shorten-worker-hide-tutorial.html
 
