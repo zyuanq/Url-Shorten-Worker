@@ -8,7 +8,7 @@ const config = {
   snapchat_mode: false,//The link will be distroyed after access.
   visit_count: false,//Count visit times.
   load_kv: false,//Load all from Cloudflare KV
-  system_type: "shorturl", // shorturl, pastebin, imghost, journal
+  system_type: "shorturl", // shorturl, imghost, 其它类型 {pastebin, journal}
 }
 
 // key in protect_keylist can't read, add, del from UI and API
@@ -273,7 +273,9 @@ async function handleRequest(request) {
           headers: response_header,
         })
       }
+
     }
+
   } else if (request.method === "OPTIONS") {
     return new Response(``, {
       headers: response_header,
@@ -305,6 +307,8 @@ async function handleRequest(request) {
     let index = await fetch(index_html)
     index = await index.text()
     index = index.replace(/__PASSWORD__/gm, password_value)
+    // 操作页面文字修改
+    // index = index.replace(/短链系统变身/gm, "")
     return new Response(index, {
       headers: {
         "content-type": "text/html;charset=UTF-8",
@@ -377,7 +381,7 @@ async function handleRequest(request) {
         headers: {'Content-Type': 'text/plain;charset=UTF-8'},
       })
     }
-  } else {
+  } else { // 其它 config.system_type 类型
     // If request not in KV, return 404
     return new Response(html404, {
       headers: {
