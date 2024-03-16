@@ -130,7 +130,7 @@
     
     function buildValueMarkdown(longUrl) {
       let valueMarkdown = document.createElement('div')
-      valueMarkdown.classList.add("form-control")  
+      valueMarkdown.classList.add("form-control", "rounded-top-0")  
       valueMarkdown.innerHTML = marked.parse(longUrl)
       return valueMarkdown
     }

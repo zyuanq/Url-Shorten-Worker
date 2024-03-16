@@ -121,16 +121,15 @@ function addUrlToList(shortUrl, longUrl) {
   let urlList = document.querySelector("#urlList")
 
   let child = document.createElement('div')
-  child.classList.add("mb-3")
-  child.classList.add("list-group-item")
+  child.classList.add("mb-3", "list-group-item")
 
   let keyItem = document.createElement('div')
   keyItem.classList.add("input-group")
 
   // 删除按钮 Remove item button
   let delBtn = document.createElement('button')
-  delBtn.setAttribute('type', 'button')
-  delBtn.classList.add("btn", "btn-danger")
+  delBtn.setAttribute('type', 'button')  
+  delBtn.classList.add("btn", "btn-danger", "rounded-bottom-0")
   delBtn.setAttribute('onclick', 'deleteShortUrl(\"' + shortUrl + '\")')
   delBtn.setAttribute('id', 'delBtn-' + shortUrl)
   delBtn.innerText = "X"
@@ -147,7 +146,7 @@ function addUrlToList(shortUrl, longUrl) {
 
   // 短链接信息 Short url
   let keyTxt = document.createElement('span')
-  keyTxt.classList.add("form-control")
+  keyTxt.classList.add("form-control", "rounded-bottom-0")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
   keyItem.appendChild(keyTxt)
   
@@ -308,7 +307,7 @@ function loadKV() {
 
 function buildValueTxt(longUrl) {
   let valueTxt = document.createElement('div')
-  valueTxt.classList.add("form-control")
+  valueTxt.classList.add("form-control", "rounded-top-0")
   valueTxt.innerText = longUrl
   return valueTxt
 }
