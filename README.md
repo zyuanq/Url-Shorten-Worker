@@ -70,5 +70,4 @@ https://zelikk.blogspot.com/2024/01/url-shorten-worker-password-protect-keylist.
 https://zelikk.blogspot.com/2024/01/url-shorten-worker-image-hosting-base64.html
 
 # 用你的STAR告诉我这个Repo对你有用 Welcome STARs! :)
-
-https://starchart.cc/crazypeace/Url-Shorten-Worker
+[![Stargazers over time](https://starchart.cc/crazypeace/Url-Shorten-Worker.svg)](https://starchart.cc/crazypeace/Url-Shorten-Worker)
