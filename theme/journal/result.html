@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Url-Shorten-Worker</title>
+</head>
+
+<body>
+	<div id="html-preview"></div>
+	<textarea class="form-control" id="longURL" readonly hidden>{__FINAL_LINK__}</textarea>
+
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+	<script>
+		// 把MarkDown文本转换为显示
+		function syncMarkDownView() {
+			const markdownContent = document.getElementById('longURL').value;
+			const htmlPreview = document.getElementById('html-preview');
+			htmlPreview.innerHTML = marked.parse(markdownContent);
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			syncMarkDownView();
+		});
+	</script>
+</body>
+
+</html>

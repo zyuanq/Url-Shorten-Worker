@@ -1,5 +1,6 @@
 const config = {
-  no_ref: "off", //Control the HTTP referrer header, if you want to create an anonymous link that will hide the HTTP Referer header, please set to "on" .
+  // no_ref: "off", //Control the HTTP referrer header, if you want to create an anonymous link that will hide the HTTP Referer header, please set to "on" .
+  result_page: false, // After get the value from KV, if use a page to show the result.
   theme: "",//Homepage theme, use the empty value for default theme. To use urlcool theme, please fill with "theme/urlcool" .
   cors: "on",//Allow Cross-origin resource sharing for API requests.
   unique_link: false,//If it is true, the same long url will be shorten into the same short url
@@ -17,7 +18,7 @@ const protect_keylist = [
 ]
 
 let index_html = "https://crazypeace.github.io/Url-Shorten-Worker/" + config.theme + "/index.html"
-let no_ref_html = "https://crazypeace.github.io/Url-Shorten-Worker/no-ref.html"
+let result_html = "https://crazypeace.github.io/Url-Shorten-Worker/" + config.theme + "/result.html"
 
 const html404 = `<!DOCTYPE html>
   <html>
@@ -357,11 +358,11 @@ async function handleRequest(request) {
         location = value
       }
 
-      if (config.no_ref == "on") {
-        let no_ref = await fetch(no_ref_html)
-        no_ref = await no_ref.text()
-        no_ref = no_ref.replace(/{__FINAL_LINK__}/gm, location)
-        return new Response(no_ref, {
+      if (config.result_page) {
+        let result_page_content = await fetch(result_html)
+        result_page_content_text = await result_page_content.text()
+        result_page_content_text = result_page_content_text.replace(/{__FINAL_LINK__}/gm, location)
+        return new Response(result_page_content_text, {
           headers: {
             "content-type": "text/html;charset=UTF-8",
           },
