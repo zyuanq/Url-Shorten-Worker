@@ -347,29 +347,28 @@ async function handleRequest(request) {
       await LINKS.delete(path)
     }
 
-    // 作为一个短链系统, value就是long URL, 需要跳转
-    if (config.system_type == "shorturl") {
-      // 带上参数部分, 拼装要跳转的最终网址
-      // URL to jump finally
-      let location;
-      if (params) {
-        location = value + params
-      } else {
-        location = value
-      }
+    // 带上参数部分, 拼装要跳转的最终网址
+    // URL to jump finally
+    if (params) {
+      value = value + params
+    }
 
-      if (config.result_page) {
-        let result_page_html = await fetch(result_html)
-        let result_page_html_text = await result_page_html.text()
-        result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, location)
-        return new Response(result_page_html_text, {
-          headers: {
-            "content-type": "text/html;charset=UTF-8",
-          },
-        })
-      } else {
-        return Response.redirect(location, 302)
-      }
+    // 如果自定义了结果页面
+    if (config.result_page) {
+      let result_page_html = await fetch(result_html)
+      let result_page_html_text = await result_page_html.text()      
+      result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, value)
+      return new Response(result_page_html_text, {
+        headers: {
+          "content-type": "text/html;charset=UTF-8",
+        },
+      })
+    } 
+
+    // 以下是不使用自定义结果页面的处理
+    // 作为一个短链系统, 需要跳转
+    if (config.system_type == "shorturl") {
+      return Response.redirect(value, 302)
     } else if (config.system_type == "imghost") {
       // 如果是图床      
       var blob = base64ToBlob(value)
@@ -382,7 +381,7 @@ async function handleRequest(request) {
         headers: {'Content-Type': 'text/plain;charset=UTF-8'},
       })
     }
-  } else { // 其它 config.system_type 类型
+  } else { 
     // If request not in KV, return 404
     return new Response(html404, {
       headers: {
