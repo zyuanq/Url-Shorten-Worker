@@ -6,6 +6,7 @@
 </head>
 
 <body>
+	<button onclick="syncMarkDownView()">Click me</button>
 	<div id="html-preview"></div>
 	<textarea class="form-control" id="longURL" readonly hidden>{__FINAL_LINK__}</textarea>
 
@@ -19,9 +20,9 @@
 			htmlPreview.innerHTML = marked.parse(markdownContent);
 		}
 
-		document.addEventListener('DOMContentLoaded', function () {
-			syncMarkDownView();
-		});
+		// document.addEventListener('DOMContentLoaded', function () {
+		// 	syncMarkDownView();
+		// });
 	</script>
 </body>
 

@@ -359,10 +359,10 @@ async function handleRequest(request) {
       }
 
       if (config.result_page) {
-        let result_page_content = await fetch(result_html)
-        result_page_content_text = await result_page_content.text()
-        result_page_content_text = result_page_content_text.replace(/{__FINAL_LINK__}/gm, location)
-        return new Response(result_page_content_text, {
+        let result_page_html = await fetch(result_html)
+        let result_page_html_text = await result_page_html.text()
+        result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, location)
+        return new Response(result_page_html_text, {
           headers: {
             "content-type": "text/html;charset=UTF-8",
           },
