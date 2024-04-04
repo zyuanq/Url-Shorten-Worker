@@ -1,14 +1,13 @@
 const config = {
-  // no_ref: "off", //Control the HTTP referrer header, if you want to create an anonymous link that will hide the HTTP Referer header, please set to "on" .
   result_page: false, // After get the value from KV, if use a page to show the result.
-  theme: "",//Homepage theme, use the empty value for default theme. To use urlcool theme, please fill with "theme/urlcool" .
-  cors: "on",//Allow Cross-origin resource sharing for API requests.
-  unique_link: false,//If it is true, the same long url will be shorten into the same short url
-  custom_link: true,//Allow users to customize the short url.
+  theme: "", //Homepage theme, use the empty value for default theme. To use urlcool theme, please fill with "theme/urlcool" .
+  cors: true, //Allow Cross-origin resource sharing for API requests.
+  unique_link: false, //If it is true, the same long url will be shorten into the same short url
+  custom_link: true, //Allow users to customize the short url.
   overwrite_kv: false, // Allow user to overwrite an existed key.
-  snapchat_mode: false,//The link will be distroyed after access.
-  visit_count: false,//Count visit times.
-  load_kv: false,//Load all from Cloudflare KV
+  snapchat_mode: false, //The link will be distroyed after access.
+  visit_count: false, //Count visit times.
+  load_kv: false, //Load all from Cloudflare KV
   system_type: "shorturl", // shorturl, imghost, 其它类型 {pastebin, journal}
 }
 
@@ -33,7 +32,7 @@ let response_header = {
   "Content-type": "text/html;charset=UTF-8;application/json",
 }
 
-if (config.cors == "on") {
+if (config.cors) {
   response_header = {
     "Content-type": "text/html;charset=UTF-8;application/json",
     "Access-Control-Allow-Origin": "*",
