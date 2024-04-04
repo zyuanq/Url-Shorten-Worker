@@ -296,9 +296,7 @@ async function handleRequest(request) {
   if (!path) {
     return Response.redirect("https://zelikk.blogspot.com/search/label/Url-Shorten-Worker", 302)
     /* new Response(html404, {
-      headers: {
-        "content-type": "text/html;charset=UTF-8",
-      },
+      headers: response_header,
       status: 404
     }) */
   }
@@ -311,9 +309,7 @@ async function handleRequest(request) {
     // 操作页面文字修改
     // index = index.replace(/短链系统变身/gm, "")
     return new Response(index, {
-      headers: {
-        "content-type": "text/html;charset=UTF-8",
-      },
+      headers: response_header,
     })
   }
 
@@ -359,9 +355,7 @@ async function handleRequest(request) {
       let result_page_html_text = await result_page_html.text()      
       result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, value)
       return new Response(result_page_html_text, {
-        headers: {
-          "content-type": "text/html;charset=UTF-8",
-        },
+        headers: response_header,
       })
     } 
 
@@ -373,20 +367,18 @@ async function handleRequest(request) {
       // 如果是图床      
       var blob = base64ToBlob(value)
       return new Response(blob, {
-        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+        // 图片不能指定content-type为 text/plain
       })
     } else {
       // 如果只是一个单纯的key-value系统, 简单的显示value就行了
       return new Response(value, {
-        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+        headers: response_header,
       })
     }
   } else { 
     // If request not in KV, return 404
     return new Response(html404, {
-      headers: {
-        "content-type": "text/html;charset=UTF-8",
-      },
+      headers: response_header,
       status: 404
     })
   }
