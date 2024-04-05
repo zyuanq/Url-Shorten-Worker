@@ -149,8 +149,22 @@ function addUrlToList(shortUrl, longUrl) {
   keyTxt.classList.add("form-control", "rounded-bottom-0")
   keyTxt.innerText = window.location.protocol + "//" + window.location.host + "/" + shortUrl
   keyItem.appendChild(keyTxt)
+
+  // 显示二维码按钮
+  let qrcodeBtn = document.createElement('button')  
+  qrcodeBtn.setAttribute('type', 'button')
+  qrcodeBtn.classList.add("btn", "btn-info")
+  qrcodeBtn.setAttribute('onclick', 'buildQrcode(\"' + shortUrl + '\")')
+  qrcodeBtn.setAttribute('id', 'qrcodeBtn-' + shortUrl)
+  qrcodeBtn.innerText = "QR"
+  keyItem.appendChild(qrcodeBtn)
   
   child.appendChild(keyItem)
+
+  // 插入一个二级码占位
+  let qrcodeItem = document.createElement('div');
+  qrcodeItem.setAttribute('id', 'qrcode-' + shortUrl)
+  child.appendChild(qrcodeItem)
 
   // 长链接信息 Long url
   child.appendChild(buildValueItemFunc(longUrl))
@@ -303,6 +317,64 @@ function loadKV() {
     alert("Unknow error. Please retry!");
     console.log(err);
   })
+}
+
+// 生成二维码
+function buildQrcode(shortUrl) {
+  // 感谢项目 https://github.com/lrsjng/jquery-qrcode
+  var options = {
+    // render method: 'canvas', 'image' or 'div'
+    render: 'canvas',
+
+    // version range somewhere in 1 .. 40
+    minVersion: 1,
+    maxVersion: 40,
+
+    // error correction level: 'L', 'M', 'Q' or 'H'
+    ecLevel: 'Q',
+
+    // offset in pixel if drawn onto existing canvas
+    left: 0,
+    top: 0,
+
+    // size in pixel
+    size: 256,
+
+    // code color or image element
+    fill: '#000',
+
+    // background color or image element, null for transparent background
+    background: null,
+
+    // content
+    // 要转换的文本
+    text: window.location.protocol + "//" + window.location.host + "/" + shortUrl,
+
+    // corner radius relative to module width: 0.0 .. 0.5
+    radius: 0,
+
+    // quiet zone in modules
+    quiet: 0,
+
+    // modes
+    // 0: normal
+    // 1: label strip
+    // 2: label box
+    // 3: image strip
+    // 4: image box
+    mode: 0,
+
+    mSize: 0.1,
+    mPosX: 0.5,
+    mPosY: 0.5,
+
+    label: 'no label',
+    fontname: 'sans',
+    fontcolor: '#000',
+
+    image: null
+  };
+  $("#qrcode-" + shortUrl.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1") ).empty().qrcode(options);  
 }
 
 function buildValueTxt(longUrl) {
