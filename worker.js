@@ -286,7 +286,8 @@ async function handleRequest(request) {
   // 以下是浏览器直接访问worker页面的处理
 
   const requestURL = new URL(request.url)
-  const path = requestURL.pathname.split("/")[1]
+  let path = requestURL.pathname.split("/")[1]
+  path = decodeURIComponent(path);
   const params = requestURL.search;
 
   // console.log(path)
