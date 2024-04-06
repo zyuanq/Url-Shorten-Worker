@@ -1,14 +1,14 @@
 const config = {
   result_page: false, // After get the value from KV, if use a page to show the result.
-  theme: "", //Homepage theme, use the empty value for default theme. To use urlcool theme, please fill with "theme/urlcool" .
-  cors: true, //Allow Cross-origin resource sharing for API requests.
-  unique_link: false, //If it is true, the same long url will be shorten into the same short url
-  custom_link: true, //Allow users to customize the short url.
+  theme: "", // Homepage theme, use the empty value for default theme. To use urlcool theme, please fill with "theme/urlcool" .
+  cors: true, // Allow Cross-origin resource sharing for API requests.
+  unique_link: false, // If it is true, the same long url will be shorten into the same short url
+  custom_link: true, // Allow users to customize the short url.
   overwrite_kv: false, // Allow user to overwrite an existed key.
-  snapchat_mode: false, //The link will be distroyed after access.
-  visit_count: false, //Count visit times.
-  load_kv: false, //Load all from Cloudflare KV
-  system_type: "shorturl", // shorturl, imghost, 其它类型 {pastebin, journal}
+  snapchat_mode: false, // The link will be distroyed after access.
+  visit_count: false, // Count visit times.
+  load_kv: false, // Load all from Cloudflare KV
+  system_type: "shorturl", // shorturl, imghost, other types {pastebin, journal}
 }
 
 // key in protect_keylist can't read, add, del from UI and API
@@ -122,7 +122,7 @@ async function handleRequest(request) {
   const password_value = await LINKS.get("password");
 
   /************************/
-  // 以下是API接口的处理
+  // 以下是API接口的处理 Below is operation for API
 
   if (request.method === "POST") {
     let req = await request.json()
@@ -283,7 +283,7 @@ async function handleRequest(request) {
   }
 
   /************************/
-  // 以下是浏览器直接访问worker页面的处理
+  // 以下是浏览器直接访问worker页面的处理 Below is operation for browser visit worker page
 
   const requestURL = new URL(request.url)
   let path = requestURL.pathname.split("/")[1]
@@ -302,6 +302,7 @@ async function handleRequest(request) {
   }
 
   // 如果path符合password 显示操作页面index.html
+  // if path equals password, return index.html
   if (path == password_value) {
     let index = await fetch(index_html)
     index = await index.text()
@@ -319,67 +320,69 @@ async function handleRequest(request) {
   // console.log(value)
 
   // 如果path是'password', 让查询结果为空, 不然直接就把password查出来了
+  // Protect password. If path equals 'password', set result null
   if (protect_keylist.includes(path)) {
     value = ""
   }
 
-  if (value) {
-    // 计数功能
-    if (config.visit_count) {
-      // 获取并增加访问计数
-      let count = await LINKS.get(path + "-count");
-      if (count === null) {
-        await LINKS.put(path + "-count", "1"); // 初始化为1，因为这是首次访问
-      } else {
-        count = parseInt(count) + 1;
-        await LINKS.put(path + "-count", count.toString());
-      }
-    }
-
-    // 如果阅后即焚模式
-    if (config.snapchat_mode) {
-      // 删除KV中的记录
-      // Remove record before jump to long url
-      await LINKS.delete(path)
-    }
-
-    // 带上参数部分, 拼装要跳转的最终网址
-    // URL to jump finally
-    if (params) {
-      value = value + params
-    }
-
-    // 如果自定义了结果页面
-    if (config.result_page) {
-      let result_page_html = await fetch(result_html)
-      let result_page_html_text = await result_page_html.text()      
-      result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, value)
-      return new Response(result_page_html_text, {
-        headers: response_header,
-      })
-    } 
-
-    // 以下是不使用自定义结果页面的处理
-    // 作为一个短链系统, 需要跳转
-    if (config.system_type == "shorturl") {
-      return Response.redirect(value, 302)
-    } else if (config.system_type == "imghost") {
-      // 如果是图床      
-      var blob = base64ToBlob(value)
-      return new Response(blob, {
-        // 图片不能指定content-type为 text/plain
-      })
-    } else {
-      // 如果只是一个单纯的key-value系统, 简单的显示value就行了
-      return new Response(value, {
-        headers: response_header,
-      })
-    }
-  } else { 
+  if (!value) {
+    // KV中没有数据, 返回404
     // If request not in KV, return 404
     return new Response(html404, {
       headers: response_header,
       status: 404
+    })
+  }
+
+  // 计数功能
+  if (config.visit_count) {
+    // 获取并增加访问计数
+    let count = await LINKS.get(path + "-count");
+    if (count === null) {
+      await LINKS.put(path + "-count", "1"); // 初始化为1，因为这是首次访问
+    } else {
+      count = parseInt(count) + 1;
+      await LINKS.put(path + "-count", count.toString());
+    }
+  }
+
+  // 如果阅后即焚模式
+  if (config.snapchat_mode) {
+    // 删除KV中的记录
+    // Remove record before jump to long url
+    await LINKS.delete(path)
+  }
+
+  // 带上参数部分, 拼装要跳转的最终网址
+  // URL to jump finally
+  if (params) {
+    value = value + params
+  }
+
+  // 如果自定义了结果页面
+  if (config.result_page) {
+    let result_page_html = await fetch(result_html)
+    let result_page_html_text = await result_page_html.text()      
+    result_page_html_text = result_page_html_text.replace(/{__FINAL_LINK__}/gm, value)
+    return new Response(result_page_html_text, {
+      headers: response_header,
+    })
+  } 
+
+  // 以下是不使用自定义结果页面的处理
+  // 作为一个短链系统, 需要跳转
+  if (config.system_type == "shorturl") {
+    return Response.redirect(value, 302)
+  } else if (config.system_type == "imghost") {
+    // 如果是图床      
+    var blob = base64ToBlob(value)
+    return new Response(blob, {
+      // 图片不能指定content-type为 text/plain
+    })
+  } else {
+    // 如果只是一个单纯的key-value系统, 简单的显示value就行了
+    return new Response(value, {
+      headers: response_header,
     })
   }
 }
