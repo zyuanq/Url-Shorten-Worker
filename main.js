@@ -6,6 +6,7 @@ let password_value = document.querySelector("#passwordText").value
 // let password_value = "journaljournal"
 
 // 这是默认行为, 在不同的index.html中可以设置为不同的行为
+// This is default, you can define it to different funciton in different theme index.html
 let buildValueItemFunc = buildValueTxt
 
 function shorturl() {
@@ -15,6 +16,7 @@ function shorturl() {
   }
   
   // 短链中不能有空格
+  // key can't have space in it
   document.getElementById('keyPhrase').value = document.getElementById('keyPhrase').value.replace(/\s/g, "-");
 
   document.getElementById("addBtn").disabled = true;
