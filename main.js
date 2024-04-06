@@ -13,6 +13,9 @@ function shorturl() {
     alert("Url cannot be empty!")
     return
   }
+  
+  // 短链中不能有空格
+  document.getElementById('keyPhrase').value = document.getElementById('keyPhrase').value.replace(/\s/g, "-");
 
   document.getElementById("addBtn").disabled = true;
   document.getElementById("addBtn").innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Please wait...';
@@ -374,7 +377,7 @@ function buildQrcode(shortUrl) {
 
     image: null
   };
-  $("#qrcode-" + shortUrl.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1") ).empty().qrcode(options);  
+  $("#qrcode-" + shortUrl.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1") ).empty().qrcode(options);
 }
 
 function buildValueTxt(longUrl) {
