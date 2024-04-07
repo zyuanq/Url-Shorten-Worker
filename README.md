@@ -60,7 +60,7 @@ https://zelikk.blogspot.com/2024/01/url-shorten-worker-image-hosting-base64.html
 变身网络日志本 支持 Markdown  
 https://zelikk.blogspot.com/2024/02/url-shorten-worker-netjournal.html  
 https://zelikk.blogspot.com/2024/02/url-shorten-worker-netjournal-markdown.html  
-
+https://zelikk.blogspot.com/2024/04/url-shorten-worker-netjournal-markdown.html
 
 # 用你的STAR告诉我这个Repo对你有用 Welcome STARs! :)
 [![Stargazers over time](https://starchart.cc/crazypeace/Url-Shorten-Worker.svg)](https://starchart.cc/crazypeace/Url-Shorten-Worker)
