@@ -379,7 +379,7 @@ function buildQrcode(shortUrl) {
 
     image: null
   };
-  $("#qrcode-" + shortUrl.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1") ).empty().qrcode(options);
+  $("#qrcode-" + shortUrl.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1").replace(/(:|\#|\[|\]|,|=|@)/g, "\\$1") ).empty().qrcode(options);
 }
 
 function buildValueTxt(longUrl) {
