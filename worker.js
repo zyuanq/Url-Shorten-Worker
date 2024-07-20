@@ -382,7 +382,9 @@ async function handleRequest(request) {
   } else {
     // 如果只是一个单纯的key-value系统, 简单的显示value就行了
     return new Response(value, {
-      headers: response_header,
+      headers: {
+          "Content-type": "text/plain;charset=UTF-8;",
+        },
     })
   }
 }
